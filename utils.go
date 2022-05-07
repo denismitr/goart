@@ -2,6 +2,7 @@ package goart
 
 import (
 	"bytes"
+
 	"golang.org/x/exp/constraints"
 )
 
@@ -13,15 +14,15 @@ func min[T constraints.Ordered](a, b T) T {
 	}
 }
 
-func replaceInnerNode(old, new *innerNode) {
+func replaceInnerNode[T any](old, new *innerNode[T]) {
 	*old = *new
 }
 
-func replaceNode(old, new *Node) {
+func replaceNode[T any](old, new *Node[T]) {
 	*old = *new
 }
 
-func replaceNodeRef(old **Node, new *Node) {
+func replaceNodeRef[T any](old **Node[T], new *Node[T]) {
 	*old = new
 }
 
@@ -37,4 +38,9 @@ func terminate(key []byte) []byte {
 		key = append(key, byte(0))
 	}
 	return key
+}
+
+func zeroValue[T any]() T {
+	var result T
+	return result
 }

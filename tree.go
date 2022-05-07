@@ -1,52 +1,52 @@
 package goart
 
-type Tree struct {
-	root *Node
+type Tree[T any] struct {
+	root *Node[T]
 	size uint64
 }
 
-func NewTree() *Tree {
-	return &Tree{root: nil, size: 0}
+func NewTree[T any]() *Tree[T] {
+	return &Tree[T]{root: nil, size: 0}
 }
 
-func (t *Tree) Size() uint64 {
+func (t *Tree[T]) Size() uint64 {
 	return t.size
 }
 
-func (t *Tree) Search(key []byte) interface{} {
+func (t *Tree[T]) Search(key []byte) T {
 	key = terminate(key)
 	return t.search(t.root, key, 0)
 }
 
-func (t *Tree) search(current *Node, key []byte, offset int) interface{} {
+func (t *Tree[T]) search(current *Node[T], key []byte, offset int) T {
 	for current != nil {
 		if current.IsLeaf() {
 			if current.leaf.isMatch(key) {
 				return current.leaf.value
 			}
 
-			return nil
+			return zeroValue[T]()
 		}
 
 		in := current.inner
 		if current.prefixMatchIndex(key, offset) != in.prefixLen {
-			return nil
+			return zeroValue[T]()
 		} else {
 			offset += in.prefixLen
 		}
 
 		v := in.findChild(key[offset])
 		if v == nil {
-			return nil
+			return zeroValue[T]()
 		}
 		current = *(v)
 		offset++
 	}
 
-	return nil
+	return zeroValue[T]()
 }
 
-type level struct {
-	node  *Node
+type level[T any] struct {
+	node  *Node[T]
 	index int
 }
