@@ -265,28 +265,28 @@ func (in *innerNode[T]) addChild(key byte, node *Node[T]) {
 		in.children[i] = node
 		in.size += 1
 	case node16:
-		i := in.size
+		idx := in.size
 		bitfield := uint(0)
 		for j := 0; j < in.size; j++ {
 			if in.keys[j] >= key {
-				bitfield |= 1 << i
+				bitfield |= 1 << j
 			}
 		}
 		mask := (1 << in.size) - 1
 		bitfield &= uint(mask)
 		if bitfield != 0 {
-			i = bits.TrailingZeros(bitfield)
+			idx = bits.TrailingZeros(bitfield)
 		}
 
-		for j := in.size; j > i; j-- {
+		for j := in.size; j > idx; j-- {
 			if in.keys[j-1] > key {
 				in.keys[j] = in.keys[j-1]
 				in.children[j] = in.children[j-1]
 			}
 		}
 
-		in.keys[i] = key
-		in.children[i] = node
+		in.keys[idx] = key
+		in.children[idx] = node
 		in.size += 1
 	case node48:
 		i := 0

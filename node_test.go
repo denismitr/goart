@@ -21,3 +21,23 @@ func TestNode4_AddChild_PreserveSorted(t *testing.T) {
 		t.Errorf("unexpected key sequence %+v", n.keys)
 	}
 }
+
+func TestNode16_AddChild4_PreserveSort(t *testing.T) {
+	n := newNode16[int]().inner
+
+	for i := 16; i > 0; i-- {
+		n.addChild(byte(i), newNode4[int]())
+	}
+
+	if n.size != 16 {
+		t.Error("expected inner node size to be 16")
+	}
+
+	for i := 0; i < 16; i++ {
+		want := byte(i + 1)
+		got := n.keys[i]
+		if want != got {
+			t.Errorf("unexpected key sequence at index %d: want=%+v, got=%+v", i, want, got)
+		}
+	}
+}
